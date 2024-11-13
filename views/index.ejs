@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Story Generator</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex flex-col min-h-screen font-sans bg-gradient-to-r from-blue-100 via-green-100 to-pink-100">
+
+    <!-- Navbar -->
+    <nav class="fixed top-0 left-0 z-10 w-full p-4 bg-blue-600">
+        <div class="flex items-center justify-between max-w-6xl mx-auto text-white">
+            <a href="/" class="text-2xl font-semibold">StoryGen</a>
+            <div class="space-x-6">
+                <a href="/profile" class="hover:text-blue-200">Profile</a>
+                <a href="/edit-profile" class="hover:text-blue-200">Settings</a>
+                <a href="/login" class="hover:text-blue-200">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main container centered with increased width and colorful design -->
+    <div class="flex flex-col items-center justify-center w-full h-full mt-24">
+
+        <div class="w-full max-w-3xl p-8 bg-white border-2 border-gray-200 shadow-2xl rounded-2xl">
+
+            <!-- Heading -->
+            <h1 class="mb-6 text-4xl font-bold text-center text-transparent text-gradient bg-gradient-to-r from-pink-500 to-yellow-500 bg-clip-text">
+                Story Idea Generator
+            </h1>
+
+            <!-- Display error message if there is one -->
+            <% if (error) { %>
+                <p class="mb-4 font-medium text-center text-red-500"><%= error %></p>
+            <% } %>
+
+            <!-- Form to submit the idea -->
+            <form action="/generate-story" method="POST" class="space-y-6">
+                <div>
+                    <label for="text" class="block text-lg font-semibold text-gray-700">Enter your story idea:</label>
+                    <input type="text" name="text" id="text" placeholder="Type your idea here"
+                        value="<%= textInput || '' %>"
+                        class="w-full p-4 text-lg placeholder-gray-500 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        required />
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="px-8 py-3 font-semibold text-white transition-colors duration-300 shadow-md bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-700">
+                        Generate Story
+                    </button>
+                </div>
+            </form>
+
+            <!-- Display generated story -->
+            <% if (generatedStory) { %>
+                <div class="mt-8">
+                    <h2 class="mb-4 text-3xl font-semibold text-gray-800">Generated Story</h2>
+                    <div class="p-6 border-l-4 border-blue-500 rounded-lg shadow-md bg-gray-50">
+                        <p class="text-lg text-gray-800"><%= generatedStory %></p>
+                    </div>
+                </div>
+            <% } %>
+
+        </div>
+
+    </div>
+
+</body>
+</html>

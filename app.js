@@ -24,7 +24,7 @@ app.use(session({
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Register routes
-app.use('/', storyRoutes);
+app.use('/', storyRoutes);c
 app.use('/', authRoutes); // Use the auth routes
 
 // Start the server

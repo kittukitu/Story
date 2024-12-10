@@ -1,47 +1,71 @@
 const fetch = require('node-fetch');
 
 exports.generateStory = async (req, res) => {
-    const { text } = req.body; 
+    const { text } = req.body;  // Capture the input text
+    let error = null; // Initialize error as null
 
-    let error = null;
-
+    // Check if there is no input text
     if (!text) {
         error = 'Please provide a story idea.';
-        return res.render('index', { error, generatedStory: null, textInput: text || '' });
+        return res.render('index', { 
+            error, 
+            generatedStory: null, 
+            textInput: text || '',  // Make sure to pass textInput as empty if no text is provided
+            user: req.session.user 
+        });
     }
 
+    // Prepare the API request body
     const data = JSON.stringify({
         model: "gpt-4",
-        messages: [{ role: "user", content: text }]
+        messages: [{ role: "user", content: text }]  // Send the user input as the message
     });
 
     const options = {
         method: 'POST',
         headers: {
-            'x-rapidapi-key': 'c61d2a41e6msha677143a858cee4p1bd26ejsn166a6ee3f3ef',
-            'x-rapidapi-host': 'cheapest-gpt-4-turbo-gpt-4-vision-chatgpt-openai-ai-api.p.rapidapi.com',
+            'x-rapidapi-key': 'your-api-key',  // Replace with your actual API key
+            'x-rapidapi-host': 'your-api-host',  // Replace with the correct host
             'Content-Type': 'application/json'
         },
         body: data
     };
 
     try {
-        const response = await fetch('https://cheapest-gpt-4-turbo-gpt-4-vision-chatgpt-openai-ai-api.p.rapidapi.com/v1/chat/completions', options);
+        // Send the request to the API
+        const response = await fetch('https://your-api-endpoint-url.com/v1/chat/completions', options);
         const result = await response.json();
 
+        // Check if the response has a valid generated story
         if (result && result.choices && result.choices[0].message.content) {
+            // If successful, render the result with the generated story
             return res.render('index', {
                 generatedStory: result.choices[0].message.content,
-                textInput: text || '',
-                error
+                textInput: text,  // Pass the input text back to the view
+                error,  // Pass the error (which should be null if no error occurred)
+                user: req.session.user
             });
         } else {
+            // If there's no valid story, show an error message
             error = 'Story generation failed. Please try again.';
-            return res.render('index', { error, generatedStory: null, textInput: text || '' });
+            // Assuming you are in your controller function
+return res.render('index', {
+    generatedStory: result.choices[0].message.content, // Pass the generated story
+    textInput: text || '', // Pass the user input
+    error: error, // Pass the error message (if any)
+    user: req.session.user // Pass the user data
+});
+
         }
-    } catch (error) {
-        console.error('Error during story generation:', error);
+    } catch (err) {
+        // Handle any error that occurs during the API call
+        console.error('Error during story generation:', err);
         error = 'An error occurred while generating the story.';
-        return res.render('index', { error, generatedStory: null, textInput: text || '' });
+        return res.render('index', { 
+            error, 
+            generatedStory: null, 
+            textInput: text,  // Ensure text input is passed back
+            user: req.session.user 
+        });
     }
 };

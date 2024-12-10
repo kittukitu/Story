@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Admin - Users</title>
+</head>
+<body>
+    <h1>Admin Panel - User Management</h1>
+    <p>Welcome, <%= user.username %></p>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Location</th>
+                <th>Gender</th>
+                <th>Role</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% users.forEach((u) => { %>
+                <tr>
+                    <td><%= u.id %></td>
+                    <td><%= u.username %></td>
+                    <td><%= u.email %></td>
+                    <td><%= u.phone %></td>
+                    <td><%= u.location %></td>
+                    <td><%= u.gender %></td>
+                    <td><%= u.role %></td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+</body>
+</html>

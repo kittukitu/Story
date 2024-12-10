@@ -1,28 +1,22 @@
 const express = require('express');
 const router = express.Router();
-const authController = require('../controllers/authController');
-const storyController = require('../controllers/storyController');
 
-// Authentication Routes
-router.get('/login', (req, res) => {
-    res.render('login');
+// Handle GET request to show the generator form
+router.get('/generator', (req, res) => {
+    const textInput = req.query.text || '';  // Initialize textInput (could also be req.body.text)
+    res.render('generator', { textInput });
 });
-router.post('/login', authController.login);
 
-router.get('/register', (req, res) => {
-    res.render('register');
-});
-router.post('/register', authController.register);
-
-router.post('/logout', authController.logout);
-
-// Story Generation Routes
-router.get('/', (req, res) => {
-    if (!req.session.user) {
-        return res.redirect('/login');
+// Handle POST request to process the generator form
+router.post('/generator', (req, res) => {
+    const textInput = req.body.text;  // Get the submitted text input
+    
+    if (!textInput || textInput.trim() === '') {
+        const error = "Please enter a valid story idea.";
+        return res.render('generator', { error, textInput });  // Pass error and textInput
     }
-    res.render('index', { error: null, generatedStory: null, textInput: '' });
+
+    res.render('generator', { textInput });  // If no error, just pass textInput
 });
-router.post('/generate-story', storyController.generateStory);
 
 module.exports = router;

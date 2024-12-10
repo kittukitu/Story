@@ -1,19 +1,12 @@
-// controllers/adminController.js
-const userModel = require('../models/userModel');  // Assuming you have a User model
+const db = require('../config/db');
 
-exports.adminPage= (req, res) => {
-  const currentUser =req.session.user;
-
-  if(currentUser.role==='user'){
-    return res.redirect('/');
-  }
-  userModel.getUserWithTranslationCount((err,results)=>{
-    if(err){
-      console.error(err);
-      return res.redirect('/');
-    }
-    res.render('admin',{users:results,currentUser});
-  })
+// Function to fetch all users
+exports.getAllUsers = (req, res) => {
+    db.query('SELECT id, username, email, phone, location, gender, role FROM users', (err, results) => {
+        if (err) {
+            console.error('Error fetching users:', err);
+            return res.status(500).send('Internal server error');
+        }
+        res.render('admin/users', { users: results, user: req.session.user });
+    });
 };
-
-

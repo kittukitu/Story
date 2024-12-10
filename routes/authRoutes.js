@@ -3,41 +3,30 @@ const router = express.Router();
 const authController = require('../controllers/authController');
 const profileController = require('../controllers/profileController');
 const editProfileController = require('../controllers/editProfileController');
+const { ensureAuthenticated } = require('../middlewares/authMiddleware');
 
-// Login page route
-router.get('/login', (req, res) => res.render('login'));
+// Display login page
+router.get('/login', (req, res) => {
+    res.render('login', { error: req.query.error || '' });
+});
 
-// Handle login
+// Handle login logic
 router.post('/login', authController.login);
 
-// Registration page route
+// Register routes
 router.get('/register', (req, res) => res.render('register'));
-
-// Handle registration
 router.post('/register', authController.register);
 
-// Logout functionality
+// Logout route
 router.post('/logout', authController.logout);
 
-// Profile route (requires user to be authenticated)
-router.get('/profile', (req, res) => {
-    if (req.session.user) {
-        profileController.getProfile(req, res);
-    } else {
-        res.redirect('/login');
-    }
-});
+// Profile routes
+router.get('/profile', ensureAuthenticated, profileController.getProfile);
 
-// Edit profile page route
-router.get('/edit-profile', (req, res) => {
-    if (req.session.user) {
-        res.render('edit-profile', { user: req.session.user });
-    } else {
-        res.redirect('/login');
-    }
+// Edit Profile routes
+router.get('/edit-profile', ensureAuthenticated, (req, res) => {
+    res.render('edit-profile', { user: req.session.user });
 });
-
-// Handle edit profile form submission
-router.post('/edit-profile', editProfileController.updateProfile);
+router.post('/edit-profile', ensureAuthenticated, editProfileController.updateProfile);
 
 module.exports = router;
